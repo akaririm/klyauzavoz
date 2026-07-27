@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Klayzavoz 💖</title>
+  <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+  <style>
+    html { scroll-behavior: smooth; }
+    body { margin: 0; padding: 0; background-color: #000307; overflow-x: hidden; }
+    
+    .main-container, .content-section, .explosion-section {
+      width: 100vw; height: 100vh;
+      position: relative; overflow: hidden;
+      box-sizing: border-box;
+    }
+
+    /* Изоляция нижних экранов на старте для защиты первого слайда */
+    .content-section, .explosion-section { display: none; }
+
+    /* ЭКРАН 1 */
+    .main-container { background-image: url('images/bg.svg'); background-size: 100% 100%; background-position: center; }
+    .scale-wrapper, .scale-wrapper-s2, .scale-wrapper-s3 { position: absolute; left: 50%; top: 50%; width: 1440px; height: 1024px; transform-origin: center center; transform: translate(-50%, -50%) scale(1); }
+    .title-text { width: 743px; left: 375px; top: 250px; position: absolute; text-align: center; color: black; font-size: 64px; font-family: 'Epilepsy Sans', sans-serif; font-weight: 500; word-wrap: break-word; line-height: 1.3; }
+    
+    .clickable-btn { position: absolute; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; border: none; background: none; padding: 0; font-family: 'Epilepsy Sans', sans-serif; font-weight: 500; color: black; z-index: 100; width: 220px; height: 158px; box-sizing: border-box; }
+    #agree-container { left: 453px; top: 571px; }
+    #agree-container:hover { transform: scale(1.03); }
+    #runaway-container { left: 741px; top: 571px; transition: all 0.1s ease; z-index: 9999; }
+    
+    .btn-svg-bg { width: 100%; height: 100%; object-fit: contain; position: absolute; top: 0; left: 0; z-index: 1; pointer-events: none; }
+    .btn-text-top { position: relative; z-index: 2; font-size: 32px; text-align: center; width: 100%; pointer-events: none; margin-top: 48px; }
+    .btn-text-bottom { position: relative; z-index: 2; font-size: 24px; text-align: center; width: 100%; pointer-events: none; margin-top: 30px; padding-left: 10px; }
+    
+    /* ЭКРАН 2 */
+    .content-section { background-image: url('images/screen2.svg'); background-size: 100% 100%; background-position: center; }
+    .hotbar-container { position: absolute; left: 348px; top: 798px; width: 744px; height: 220px; z-index: 1000; }
+    .hotbar-img { width: 100%; height: 100%; display: block; object-fit: contain; }
+    
+    .hotbar-sub-btn { position: absolute; cursor: pointer; border: none; background: none; padding: 0; z-index: 1001; display: flex; align-items: center; justify-content: center; width: 53px; height: 53px; top: 934px; }
+    #spyglass-btn { left: 454px; }
+    #apple-btn { left: 617px; }
+    #book-btn { left: 698px; }
+    #honey-btn { left: 934px; }
+    #slime-btn { left: 1017px; }
+    .inv-img { width: 100%; height: 100%; object-fit: contain; }
+    
+    .scene-object { position: absolute; border: none; background: none; padding: 0; z-index: 500; }
+    .scene-img { display: block; width: 100%; height: 100%; object-fit: contain; }
+    #bell-btn { left: 951px; top: 521px; width: 285px; height: 397px; cursor: pointer; }
+    #verity-btn { left: 1225px; top: 481px; width: auto; height: auto; }
+    #knocker-btn { left: 658.22px; top: 281.67px; width: auto; height: auto; cursor: pointer; }
+    
+    .scene-deco { position: absolute; pointer-events: none; z-index: 400; }
+    #dog-deco { position: absolute; left: 5px; top: 441px; cursor: pointer; border: none; background: none; padding: 0; z-index: 400; }
+    #sign1-deco { left: 1077px; top: 218px; }
+    #sign2-deco { left: 966.07px; top: 505.87px; }    #text2-deco { position: absolute; left: 644px; top: 186px; pointer-events: none; z-index: 400; }
+    
+    .dark-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(0, 0, 0, 0.5); z-index: 2000; display: none; cursor: pointer; }
+    .book-overlay-panel { position: fixed; top: 50%; right: -1200px; transform: translateY(-50%); width: 900px; height: auto; z-index: 2500; transition: right 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); display: flex; align-items: center; justify-content: center; }
+    .book-overlay-panel.open { right: 50%; transform: translate(50%, -50%); }
+    .big-book-img { width: 100%; height: auto; display: block; }
+    .close-btn-cross { position: absolute; top: 30px; right: 30px; width: 45px; height: 45px; cursor: pointer; z-index: 2600; }
+    .custom-achievement { position: fixed; top: 40px; right: -450px; width: 350px; height: auto; z-index: 3000; transition: right 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+    .custom-achievement.show { right: 40px; }
+
+    /* ЭКРАН 3 */
+    .explosion-section { background-image: url('images/screen3.svg'); background-size: 100% 100%; background-position: center; }
+    
+    .video-wrapper { position: absolute; left: 77px; top: 73px; width: 391px; height: 293px; z-index: 350; cursor: pointer; }
+    .gif-video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
+    #part2-video { opacity: 0; z-index: 2; transition: opacity 0.15s ease-in-out; }
+    .video-wrapper:hover #part2-video { opacity: 1; }
+    
+    #veerthx-item { position: absolute; left: 476px; top: 356px; pointer-events: none; z-index: 350; }
+    #crafttable-item { position: absolute; left: 169px; top: 776px; pointer-events: none; z-index: 350; }
+    #kicha-item { position: absolute; left: 89px; top: 475px; cursor: pointer; border: none; background: none; padding: 0; z-index: 500; }
+    #sign3-item { position: absolute; left: -38px; top: 672px; z-index: 350; }
+    #creeper-item { position: absolute; left: 1074px; top: 486px; width: 239px; height: 403px; z-index: 350; cursor: pointer; border: none; background: none; padding: 0; transition: transform 0.1s ease; }
+    #frame1-item { position: absolute; left: 36px; top: 33px; pointer-events: none; z-index: 360; }
+    #vanila-item { position: absolute; left: 183px; top: 411px; cursor: pointer; border: none; background: none; padding: 0; z-index: 500; }
+
+    .screen-4-section { width: 100vw; height: 100vh; position: relative; overflow: hidden; box-sizing: border-box; background-image: url('images/screen4.svg'); background-size: 100% 100%; background-position: center; display: none; }
+    .scale-wrapper-s4 { position: absolute; left: 50%; top: 50%; width: 1440px; height: 1024px; transform-origin: center center; transform: translate(-50%, -50%) scale(1); }
+    #kicharb-item { position: absolute; left: 412px; top: 440px; cursor: pointer; border: none; background: none; padding: 0; z-index: 500; }
+    #cyn-item { position: absolute; left: 939px; top: 573px; cursor: pointer; border: none; background: none; padding: 0; z-index: 500; }
+    #alek-item { position: absolute; left: 662px; top: 283px; cursor: pointer; border: none; background: none; padding: 0; z-index: 500; }
+
+    #text1-screen2 { position: absolute; left: 30px; top: 32px; pointer-events: none; z-index: 400; }
+    #text2-screen2 { position: absolute; left: 644px; top: 186px; pointer-events: none; z-index: 400; }
+    #text3-screen3 { position: absolute; left: 438px; top: 715px; pointer-events: none; z-index: 400; }
+
+    .screen-5-section { width: 100vw; height: 100vh; position: relative; overflow: hidden; box-sizing: border-box; background-image: url('images/screen5.svg'); background-size: 100% 100%; background-position: center; display: none; }
+    .scale-wrapper-s5 { position: absolute; left: 50%; top: 50%; width: 1440px; height: 1024px; transform-origin: center center; transform: translate(-50%, -50%) scale(1); }
+    
+    .screen-6-section { width: 100vw; height: 100vh; position: relative; overflow: hidden; box-sizing: border-box; background-image: url('images/screen6.svg'); background-size: 100% 100%; background-position: center; display: none; }
+    .scale-wrapper-s6 { position: absolute; left: 50%; top: 50%; width: 1440px; height: 1024px; transform-origin: center center; transform: translate(-50%, -50%) scale(1); }
+    #angel-video-item { position: absolute; left: 37px; top: 241px; width: 639px; height: 542px; object-fit: cover; z-index: 350; pointer-events: none; }
+    #frame3-item { position: absolute; left: 0px; top: 180px; pointer-events: none; z-index: 360; }
+    #deltarune-item { position: absolute; left: 0px; top: 611px; pointer-events: none; z-index: 420; }
+    #envelop-item { position: absolute; left: 994px; top: 673px; cursor: pointer; border: none; background: none; padding: 0; z-index: 500; }
+    #chainsawman-item { position: absolute; left: 1105px; top: 0px; pointer-events: none; z-index: 400; }
+    #envelop-item { position: absolute; left: 994px; top: 673px; cursor: pointer; border: none; background: none; padding: 0; z-index: 500; }
+    
+    .envelop-overlay-panel { position: fixed; left: 50%; top: -1200px; transform: translateX(-50%); width: auto; height: auto; z-index: 2500; transition: top 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); display: flex; align-items: center; justify-content: center; }
+    .envelop-overlay-panel.open { top: 50%; transform: translate(-50%, -50%); }
+    .big-envelop-img { width: 100%; height: auto; display: block; }
+    #phone-item { position: absolute; left: 590px; top: 0px; pointer-events: none; z-index: 400; }
+    #note-item { position: absolute; left: 81px; top: 0px; pointer-events: none; z-index: 400; }
+    #side-item { position: absolute; left: 0px; top: 0px; pointer-events: none; z-index: 380; } /* Слой ниже */
+    
+    .vid-btn { position: absolute; cursor: pointer; border: none; background: none; padding: 0; z-index: 390; }
+    #al-box { left: 737px; top: 106px; width: 350px; height: 350px; }
+    #dox-box { left: 253px; top: 282px; width: 320px; height: 320px; }
+    #ched-box { left: 586px; top: 671px; width: 310px; height: 320px; }
+    
+    .vid-btn video { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; }
+
+    #frameblu-item { position: absolute; left: 216px; top: 243px; pointer-events: none; z-index: 410; }
+    #framered-item { position: absolute; left: 668px; top: 48px; pointer-events: none; z-index: 410; }
+    #framepink-item { position: absolute; left: 539px; top: 625px; pointer-events: none; z-index: 410; }
+    #july-item { position: absolute; left: 329px; top: 11px; pointer-events: none; z-index: 400; }
+    #finaltext1-item { position: absolute; left: 724px; top: 300px; pointer-events: none; z-index: 400; }
+    #finaltext2-item { position: absolute; left: 842px; top: 809px; pointer-events: none; z-index: 400; }
+    
+    .tupami-wrapper { position: absolute; left: 907px; top: 488px; width: auto; height: auto; z-index: 400; }
+    .tupami-wrapper img { display: block; width: 100%; height: auto; }
+    #mimem-img { position: absolute; top: 0; left: 0; opacity: 0; transition: opacity 0.15s ease-in-out; }
+    .tupami-wrapper:hover #mimem-img { opacity: 1; }
+    
+    #sharplow-item { position: absolute; left: 556px; top: 146px; pointer-events: none; z-index: 400; }
+    #flower1-item { position: absolute; left: 824px; top: 696px; cursor: pointer; border: none; background: none; padding: 0; z-index: 500; }
+    #flower2-item { position: absolute; left: 1241px; top: 512px; cursor: pointer; border: none; background: none; padding: 0; z-index: 500; }
+    #bloxy-item { position: absolute; left: 1025px; top: 440px; cursor: pointer; border: none; background: none; padding: 0; z-index: 500; }
+    #imptext1-item { position: absolute; left: 510px; top: 43px; pointer-events: none; z-index: 400; }
+    #imptext2-item { position: absolute; left: 921px; top: 377px; pointer-events: none; z-index: 400; }
+    #lodka-video-item { position: absolute; left: 910px; top: 43px; width: 499px; height: 280px; object-fit: cover; z-index: 350; pointer-events: none; }
+    #frame4-item { position: absolute; left: 870px; top: 0px; pointer-events: none; z-index: 360; }
+
+    @keyframes creeperFuse {
+      0% { filter: brightness(1); transform: scale(1); }
+      50% { filter: brightness(3) drop-shadow(0 0 15px #fff); transform: scale(1.08); }
+      100% { filter: brightness(1); transform: scale(1); }
+}
+    .creeper-primed { animation: creeperFuse 0.3s infinite ease-in-out; }
+
+    @keyframes boomFlash {
+      0% { filter: brightness(4) blur(0px); opacity: 1; transform: scale(0.5); }
+      50% { filter: brightness(2) blur(4px); opacity: 0.8; transform: scale(1.5); }
+      100% { filter: brightness(1) blur(10px); opacity: 0; transform: scale(2); }
+}
+    .explosion-effect-active { animation: boomFlash 0.4s forwards ease-out; }
+
+    @keyframes deathFade {
+      0% { background-color: rgba(139, 0, 0, 0); backdrop-filter: blur(0px); }
+      100% { background-color: rgba(139, 0, 0, 0.55); backdrop-filter: blur(2px); }
+}
+
+    .death-screen-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(139, 0, 0, 0); backdrop-filter: blur(0px); z-index: 99999; display: none; transition: background-color 0.4s ease-out, backdrop-filter 0.4s ease-out; }
+    .death-screen-overlay.fade-in { background-color: rgba(139, 0, 0, 0.55); backdrop-filter: blur(2px); }
+    .death-scale-wrapper { position: absolute; left: 50%; top: 50%; width: 1440px; height: 1024px; transform-origin: center center; transform: translate(-50%, -50%) scale(1); opacity: 0; transition: opacity 0.2s ease-out 0.3s; }
+    .death-screen-overlay.fade-in .death-scale-wrapper {
+      opacity: 1;
+    }
+
+    #youdied-img-item { position: absolute; left: 325px; top: 240px; pointer-events: none; }
+    #respawn-btn-item { position: absolute; left: 325px; top: 599px; cursor: pointer; border: none; background: none; padding: 0; }
+    #title-btn-item { position: absolute; left: 325px; top: 689px; cursor: pointer; border: none; background: none; padding: 0; }
+    
+    .death-scale-wrapper img, .death-scale-wrapper button img { display: block; }
+
+    #uzor-item { position: absolute; left: 0px; top: 0px; pointer-events: none; z-index: 300; } /* Самый нижний фоновый слой */
+    #note-icon-item { position: absolute; left: 1332px; top: 380px; cursor: pointer; border: none; background: none; padding: 0; z-index: 500; }
+    
+    .note2-overlay-panel { position: fixed; left: 50%; top: -1200px; transform: translateX(-50%); width: auto; height: auto; z-index: 2500; transition: top 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); display: flex; align-items: center; justify-content: center; }
+    .note2-overlay-panel.open { top: 50%; transform: translate(-50%, -50%); }
+    .big-note2-img { display: block; }
+
+    #chedframe-item { position: absolute; left: 8px; top: 18px; pointer-events: none; z-index: 400; }
+    #doxframe-item { position: absolute; left: 8px; top: 309px; pointer-events: none; z-index: 400; }
+    #alframe-item { position: absolute; left: 25px; top: 757px; pointer-events: none; z-index: 400; }
+
+    .gubby-wrapper { position: absolute; left: 639px; top: 730px; width: auto; height: auto; z-index: 500; cursor: pointer; }
+    .gubby-wrapper img { display: block; transition: opacity 0.15s ease-in-out; }
+    
+    #gubby2-img { position: absolute; left: -16px; top: -42px; opacity: 0; }
+    
+    .gubby-wrapper:hover #gubby1-img { opacity: 0; }
+    .gubby-wrapper:hover #gubby2-img { opacity: 1; }
+
+    #message-item { position: absolute; left: 338px; top: 55px; pointer-events: none; z-index: 400; }
+  </style>
+</head>
+<body>
+
+  <!-- Первый экран -->
+  <div class="main-container" id="screen-1">
+    <div class="scale-wrapper" id="scaler">
+      <div class="title-text">c горловщиной камызяка!!!! у мя дя тя zzzавозик XDXD<br/>хочешь взглянуть??</div>
+      <button class="clickable-btn" id="agree-container" onclick="unlockAndScroll()">
+        <img class="btn-svg-bg" src="images/btn1.svg" alt="розовая плашка" />
+        <div class="btn-text-top">погна канеш</div>
+        <div class="btn-text-bottom">го</div>
+      </button>
+      <div class="clickable-btn" id="runaway-container">
+        <img class="btn-svg-bg" src="images/btn2.svg" alt="голубая плашка" />
+        <div class="btn-text-top">лоль нет</div>
+        <div class="btn-text-bottom">не</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ВТОРОЙ ЭКРАН -->
+  <section class="content-section" id="main-story">
+    <div class="scale-wrapper-s2" id="scaler2">
+      <div class="scene-deco" id="text1-screen2"><img src="images/text1.svg" alt="надпись 1" /></div>
+      <div class="scene-deco" id="text2-screen2"><img src="images/text2.svg" alt="надпись 2" /></div>
+      <div class="hotbar-container"><img class="hotbar-img" src="images/hotbar.svg" alt="хотбар" /></div>
+      <button class="hotbar-sub-btn" id="spyglass-btn" onclick="playSound('spyglass')"><img class="inv-img" src="images/spyglass-icon.svg" alt="труба" /></button>
+      <button class="hotbar-sub-btn" id="apple-btn" onclick="playSound('apple')"><img class="inv-img" src="images/apple-icon.svg" alt="яблоко" /></button>
+      <button class="hotbar-sub-btn" id="book-btn" onclick="openBook()"><img class="inv-img" src="images/book-icon.svg" alt="книжка" /></button>
+      <button class="hotbar-sub-btn" id="honey-btn" onclick="playSound('honey')"><img class="inv-img" src="images/honey-icon.svg" alt="мед" /></button>
+      <button class="hotbar-sub-btn" id="slime-btn" onclick="playSound('slime')"><img class="inv-img" src="images/slime-icon.svg" alt="слизень" /></button>
+      <button class="scene-object" id="bell-btn" onclick="ringBell()"><img class="scene-img" src="images/bell-icon.svg" alt="колокол" /></button>
+      <div class="scene-object" id="verity-btn" onmouseenter="playSound('verity')"><img class="scene-img" src="images/verity.svg" alt="верити" /></div>
+      <button class="scene-object" id="knocker-btn" onclick="playSound('knocker')"><img class="scene-img" src="images/knocker.svg" alt="нокер" /></button>
+      <button class="scene-object" id="dog-deco" onclick="playSound('dogSound')"><img class="scene-img" src="images/dog.svg" alt="собачка" /></button>
+      <div class="scene-deco" id="sign1-deco"><img src="images/sign1.svg" alt="табличка 1" /></div>
+      <div class="scene-deco" id="sign2-deco"><img src="images/sign2.svg" alt="табличка 2" /></div>
+    </div>
+  </section>
+
+  <!-- ТРЕТИЙ ЭКРАН -->
+  <section class="explosion-section" id="explosion-screen">
+    <div class="scale-wrapper-s3" id="scaler3">
+      <div class="scene-deco" id="frame1-item"><img src="images/frame1.svg" alt="рамка для видео" /></div>
+      <div class="video-wrapper" oncontextmenu="return false;">
+         <video class="gif-video" id="part1-video" src="images/part1.mp4" autoplay muted loop playsinline disablePictureInPicture></video>
+         <video class="gif-video" id="part2-video" src="images/part2.mp4" autoplay muted loop playsinline disablePictureInPicture></video>
+      </div>
+      <div class="scene-deco" id="veerthx-item"><img src="images/veerthxframe.svg" alt="рамка" /></div>
+      <div class="scene-deco" id="crafttable-item"><img src="images/craft-table.svg" alt="верстак" /></div>
+      <button class="scene-object" id="kicha-item" onclick="playSound('haha')"><img class="scene-img" src="images/kicha.svg" alt="кича" /></button>
+      <div class="scene-deco" id="sign3-item"><img src="images/sign3.svg" alt="табличка 3" /></div>
+      
+      <button id="creeper-item" onclick="primeCreeper()">
+       <img class="scene-img" src="images/creeper.svg" alt="крипер" />
+       <img id="creeper-flash" src="images/creeper.svg" alt="вспышка" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; pointer-events: none;" />
+      </button>
+      
+      <button class="scene-object" id="vanila-item" onclick="playSound('hurt'); const img = this.querySelector('img'); img.src='images/vanila-red.svg'; setTimeout(() => { img.src='images/vanila.svg'; }, 300);"><img class="scene-img" src="images/vanila.svg" alt="ванилла" /></button>
+      <div class="scene-deco" id="text3-screen3"><img src="images/text3.svg" alt="надпись 3" /></div>
+      <div class="scene-deco" id="sharplow-item"><img src="images/sharplow.svg" alt="шарплоу" /></div>
+      <div class="scene-deco" id="imptext1-item"><img src="images/imptext1.svg" alt="важный текст 1" /></div>
+      <div class="scene-deco" id="imptext2-item"><img src="images/imptext2.svg" alt="важный текст 2" /></div>
+      <video id="lodka-video-item" src="images/lodka.mp4" autoplay muted loop playsinline disablePictureInPicture oncontextmenu="return false;"></video>
+      <div class="scene-deco" id="frame4-item"><img src="images/frame4.svg" alt="рамка для лодки" /></div>
+    </div>
+  </section>
+
+    <!-- ЧЕТВЕРТЫЙ ЭКРАН -->
+  <section class="screen-4-section" id="fourth-screen">
+    <div class="scale-wrapper-s4" id="scaler4">
+    <div class="scene-deco" id="uzor-item"><img src="images/uzor.svg" alt="узор фона" /></div>
+    <div class="scene-deco" id="chedframe-item"><img src="images/chedframe.svg" alt="рамка чед" /></div>
+    <div class="scene-deco" id="doxframe-item"><img src="images/doxframe.svg" alt="рамка докс" /></div>
+    <div class="scene-deco" id="alframe-item"><img src="images/alframe.svg" alt="рамка ал" /></div>
+    <div class="scene-deco" id="message-item"><img src="images/message.svg" alt="сообщение" /></div>
+    <button class="scene-object" id="kicharb-item" onclick="playSound('robloxYayAudio')"><img class="scene-img" src="images/kicharb.svg" alt="кича рб" /></button>
+      <button class="scene-object" id="cyn-item" onclick="playSound('cynSound')"><img class="scene-img" src="images/cyn.svg" alt="цин" /></button>
+      <button class="scene-object" id="alek-item" onclick="playSound('alekSound')"><img class="scene-img" src="images/alek.svg" alt="алек" /></button>
+      <button class="scene-object" id="bloxy-item" onclick="playSound('drink')"><img class="scene-img" src="images/bloxy.svg" alt="блокси кола" /></button>
+      <button class="scene-object" id="note-icon-item" onclick="openNote2()"><img class="scene-img" src="images/note-icon.svg" alt="иконка записки" /></button>
+      <div class="gubby-wrapper">
+         <img id="gubby1-img" src="images/gubby1.svg" alt="габби 1" />
+         <img id="gubby2-img" src="images/gubby2.svg" alt="габби 2" />
+      </div>
+    </div>
+  </section>
+
+    <!-- ПЯТЫЙ ЭКРАН -->
+  <section class="screen-5-section" id="fifth-screen">
+    <div class="scale-wrapper-s5" id="scaler5">
+      <div class="scene-deco" id="deltarune-item"><img src="images/deltarune.svg" alt="дельтарун" /></div>
+      <button class="scene-object" id="envelop-item" onclick="openEnvelop()"><img class="scene-img" src="images/envelop-icon.svg" alt="конверт" /></button>
+      <div class="scene-deco" id="chainsawman-item"><img src="images/chainsawman.svg" alt="человек бензопила" /></div>
+      <div class="scene-deco" id="phone-item"><img src="images/phone.svg" alt="телефон" /></div>
+      <div class="scene-deco" id="note-item"><img src="images/note.svg" alt="записка" /></div>
+      <div class="scene-deco" id="side-item"><img src="images/side.svg" alt="сайд" /></div>
+
+      <button class="vid-btn" id="al-box" onclick="playSound('all1')">
+        <video id="al-video-item" src="images/al.mp4" muted loop playsinline disablePictureInPicture oncontextmenu="return false;"></video>
+      </button>
+
+      <button class="vid-btn" id="dox-box" onclick="playSound('all2')">
+        <video id="dox-video-item" src="images/dox.mp4" muted loop playsinline disablePictureInPicture oncontextmenu="return false;"></video>
+      </button>
+
+      <button class="vid-btn" id="ched-box" onclick="playSound('all3')">
+        <video id="ched-video-item" src="images/ched.mp4" muted loop playsinline disablePictureInPicture oncontextmenu="return false;"></video>
+      </button>
+
+      <div class="scene-deco" id="frameblu-item"><img src="images/frameblu.svg" alt="синяя рамка" /></div>
+      <div class="scene-deco" id="framered-item"><img src="images/framered.svg" alt="красная рамка" /></div>
+      <div class="scene-deco" id="framepink-item"><img src="images/framepink.svg" alt="розовая рамка" /></div>
+      <div class="scene-deco" id="july-item"><img src="images/july.svg" alt="июль" /></div>
+    </div>
+  </section>
+
+    <!-- ШЕСТОЙ ЭКРАН -->
+  <section class="screen-6-section" id="sixth-screen">
+    <div class="scale-wrapper-s6" id="scaler6">
+      <video id="angel-video-item" src="images/angel.mp4" autoplay muted loop playsinline disablePictureInPicture oncontextmenu="return false;"></video>
+      <div class="scene-deco" id="frame3-item"><img src="images/frame3.svg" alt="рамка для видео 6 слайда" /></div>
+      <div class="scene-deco" id="finaltext1-item"><img src="images/finaltext1.svg" alt="финальный текст 1" /></div>
+      <div class="scene-deco" id="finaltext2-item"><img src="images/finaltext2.svg" alt="финальный текст 2" /></div>
+      <div class="tupami-wrapper">
+         <img id="tupami-img" src="images/tupami.svg" alt="тупами" />
+         <img id="mimem-img" src="images/mimem.svg" alt="мимем" />
+      </div>
+      <button class="scene-object" id="flower1-item" onclick="playSound('flower1')"><img class="scene-img" src="images/flower1.svg" alt="цветок 1" /></button>
+      <button class="scene-object" id="flower2-item" onclick="playSound('flower2')"><img class="scene-img" src="images/flower2.svg" alt="цветок 2" /></button>
+    </div>
+  </section>
+
+  <div class="dark-overlay" id="blur-overlay" onclick="closeBook()"></div>
+  <div class="book-overlay-panel" id="big-book">
+    <img class="big-book-img" src="images/book-overlay.svg" alt="открытая книга" />
+    <img class="close-btn-cross" src="images/close-cross.svg" alt="закрыть" onclick="closeBook(); event.stopPropagation();" />
+  </div>
+  <img class="custom-achievement" id="achievement" src="images/adv.svg" alt="достижение" />
+    <!-- ОВЕРЛЕЙ БОЛЬШОГО КОНВЕРТА -->
+  <div class="envelop-overlay-panel" id="big-envelop">
+    <img class="big-envelop-img" src="images/envelop-overlay.svg" alt="открытый конверт" />
+  </div>
+    <!-- ОВЕРЛЕЙ БОЛЬШОЙ ЗАПИСКИ С 4 СЛАЙДА -->
+  <div class="note2-overlay-panel" id="big-note2">
+    <img class="big-note2-img" src="images/note2.svg" alt="открытая записка 2" />
+  </div>
+  <!-- ЭКРАН СМЕРТИ YOU DIED С ТВОИМИ КНОПКАМИ И ФУНКЦИЯМИ -->
+  <div class="death-screen-overlay" id="death-screen">
+    <div class="death-scale-wrapper" id="death-scaler">
+      <div id="youdied-img-item"><img src="images/youdied.svg" alt="You Died" /></div>
+      <button id="respawn-btn-item" onclick="respawnPlayer()"><img src="images/respawn-btn.svg" alt="Возрождение" /></button>
+      <button id="title-btn-item" onclick="goToMainMenu()"><img src="images/title-btn.svg" alt="В главное меню" /></button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
