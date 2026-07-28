@@ -37,6 +37,9 @@ const audioFiles = {
     all3: new Audio('sounds/all3.mp3'),
     creeper: new Audio('sounds/creeper.mp3'),
     explosion: new Audio('sounds/explosion.mp3'),
+    alSong: new Audio('sounds/alsong.mp3'),
+    doxSong: new Audio('sounds/doxsong.mp3'),
+    chedSong: new Audio('sounds/chedsong.mp3'),
 };
 
 bellAudio.volume = 1.0; bookOpenAudio.volume = 1.0; achAudio.volume = 1.0;
